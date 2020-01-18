@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         et_task=findViewById(R.id.edt_task);
         et_desc=findViewById(R.id.edt_desc);
         et_fin=findViewById(R.id.edt_finish);
-//
 
 
         btn_save_.setOnClickListener(view->insertData());

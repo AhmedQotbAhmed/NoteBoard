@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.noteapp.R;
 import com.example.noteapp.entity.Note;
@@ -18,9 +16,10 @@ public class NoteDescription extends AppCompatActivity implements View.OnClickLi
     private String Desc;
     private EditText titleNote;
     private EditText textArea;
-    private ViewModel viewModel;
+
     private FloatingActionButton saveNote;
     private Note note;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,10 @@ public class NoteDescription extends AppCompatActivity implements View.OnClickLi
         saveNote = findViewById(R.id.save_note);
 
 
-        Bundle bundle = intent.getExtras();
+        Bundle bundle = intent.getBundleExtra("bundle");
+        position = intent.getIntExtra("position", -1);
+
+
         note = (Note) bundle.getSerializable("note");
         title = note.getTask();
         Desc = note.getDesc();
@@ -51,19 +53,23 @@ public class NoteDescription extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save_note:
+                titleNote.requestFocus();
+                textArea.requestFocus();
                 title = titleNote.getText().toString();
                 Desc = textArea.getText().toString();
                 note.setDesc(Desc);
                 note.setTask(title);
-                viewModel = ViewModelProviders.of(NoteDescription.this).get(ViewModel.class);
-                viewModel.update(note).observe(NoteDescription.this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean aBoolean) {
 
-                    }
-                });
+                Intent intent = new Intent();
 
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("updatedNote", note);
 
+                intent.putExtra("bundle", bundle);
+                intent.putExtra("position", position);
+
+                setResult(RESULT_OK, intent);
+                finish();
                 break;
         }
 

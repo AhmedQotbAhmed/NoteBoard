@@ -28,7 +28,6 @@ public class NoteUseCase {
 
     public void delete(Note note) {
         noteRepository.delete(note);
-
     }
 
 

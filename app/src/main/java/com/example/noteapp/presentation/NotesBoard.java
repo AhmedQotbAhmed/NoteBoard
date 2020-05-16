@@ -1,5 +1,6 @@
 package com.example.noteapp.presentation;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -61,6 +62,25 @@ public class NotesBoard extends AppCompatActivity {
         enableSwipeToDeleteAndUndo();
 
 
+//        Intent intent;
+//        intent = getIntent();
+//
+//        Bundle bundle = intent.getExtras();
+//        Note  note = (Note) bundle.getSerializable("updatedNote");
+//
+//
+//        if(note!=null ){
+//
+//            update( note);
+//
+//
+//
+//        }
+//        onActivityResult();
+
+
+
+
     }
 
 
@@ -97,17 +117,17 @@ public class NotesBoard extends AppCompatActivity {
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
 
-//                if (undo){
-//                    viewModel = ViewModelProviders.of(NotesBoard.this).get(ViewModel.class);
-//
-//                    viewModel.delete(item).observe(NotesBoard.this, new Observer<Boolean>() {
-//                        @Override
-//                        public void onChanged(Boolean aBoolean) {
-//
-//                        }
-//                    });
-//
-//                }
+                if (undo) {
+
+                    viewModel.delete(item).observe(NotesBoard.this, new Observer<Boolean>() {
+                        @Override
+                        public void onChanged(Boolean aBoolean) {
+
+
+                        }
+                    });
+
+                }
 
             }
         };
@@ -118,6 +138,48 @@ public class NotesBoard extends AppCompatActivity {
 
     }
 
+    public void update(Note note) {
+
+
+        viewModel.update(note).observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+//                adaptor.restoreItem(note, position);
+//                recyclerView.scrollToPosition(position);
+
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Note note = adaptor.onActivityResult(requestCode, resultCode, data);
+
+        viewModel.update(note).observe(NotesBoard.this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                viewModel.getData().observe(NotesBoard.this, new Observer<List<Note>>() {
+                    @Override
+                    public void onChanged(List<Note> notes) {
+                        // RecyclerView Adaptor
+                        adaptor = new NotesAdaptor(notes);
+                        recyclerView.setAdapter(adaptor);
+
+                    }
+                });
+
+
+            }
+        });
+
+    }
+
 
 }
+
+
 

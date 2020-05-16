@@ -1,5 +1,6 @@
 package com.example.noteapp.usecase;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +19,8 @@ import com.example.noteapp.entity.Note;
 import com.example.noteapp.presentation.NoteDescription;
 
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class NotesAdaptor extends RecyclerView.Adapter<NotesAdaptor.NoteHolder> {
     private Context context;
@@ -55,10 +59,11 @@ public class NotesAdaptor extends RecyclerView.Adapter<NotesAdaptor.NoteHolder> 
 
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("note", current);
-                    intent.putExtras(bundle);
+                    intent.putExtra("bundle", bundle);
+                    intent.putExtra("position", position);
 
 
-                    context.startActivity(intent);
+                    ((Activity) context).startActivityForResult(intent, 1);
 
                 }
 
@@ -67,6 +72,27 @@ public class NotesAdaptor extends RecyclerView.Adapter<NotesAdaptor.NoteHolder> 
 
 
     }
+
+
+    public Note onActivityResult(int requestCode, int resultCode, Intent data) {
+        Note note = null;
+        if (requestCode == 1) {
+
+            if (resultCode == RESULT_OK) {
+
+                Bundle bundle = data.getBundleExtra("bundle");
+                int position = data.getIntExtra("position", -1);
+                Toast.makeText(context.getApplicationContext(), "" + position, Toast.LENGTH_SHORT).show();
+                note = (Note) bundle.getSerializable("updatedNote");
+
+                update(note, position);
+
+            }
+        }
+        return note;
+
+    }
+
 
     public void removeItem(int position) {
         list.remove(position);
@@ -77,6 +103,11 @@ public class NotesAdaptor extends RecyclerView.Adapter<NotesAdaptor.NoteHolder> 
         list.add(position, item);
 
         notifyItemInserted(position);
+    }
+
+    public void update(Note item, int position) {
+        list.set(position, item);
+        notifyItemChanged(position, item);
     }
 
     public List<Note> getData() {

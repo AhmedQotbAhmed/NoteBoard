@@ -1,7 +1,6 @@
 package com.example.noteapp.presentation;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;

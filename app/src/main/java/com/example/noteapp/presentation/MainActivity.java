@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 // Room it's OFFLINE DB                                                                 "SQLite"
 
 //    Table  "named" --> Entity
-    // annotation --> "@"
+    // annotation -- > "@"
     // 1. make a jodo Class using a setter and getter
     // @Entity "to make a room knowing your class
     //@ColumnInfo ("name=.....'same of your var-name-id' ")   " to make a room creating and knowing your 'varColumn' "

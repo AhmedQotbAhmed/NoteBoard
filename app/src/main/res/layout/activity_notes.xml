@@ -10,47 +10,6 @@
     android:orientation="vertical"
     android:weightSum="3">
 
-
-    <!--    <androidx.appcompat.widget.Toolbar-->
-    <!--        android:id="@+id/toolbar"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:elevation="10dp"-->
-    <!--        android:layout_weight="0.3">-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="match_parent"-->
-    <!--            android:background="#52C0C0C0"-->
-    <!--            android:gravity="center|right"-->
-    <!--            android:orientation="vertical">-->
-
-
-    <!--            <LinearLayout-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="0dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:background="@color/colorAccent"-->
-    <!--                android:gravity="center|left">-->
-
-    <!--                <SearchView-->
-    <!--                    android:id="@+id/search_edt"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="70dp"-->
-    <!--                    android:layout_margin="5dp"-->
-    <!--                    android:background="@drawable/search_toolbar"-->
-    <!--                    android:drawableLeft="@drawable/ic_search"-->
-    <!--                    android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"-->
-    <!--                    android:ems="10"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:queryHint="Search notes"/>-->
-
-    <!--            </LinearLayout>-->
-
-    <!--        </LinearLayout>-->
-
-    <!--    </androidx.appcompat.widget.Toolbar>-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_Note"
         android:layout_height="0dp"

@@ -27,6 +27,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public ViewModel() {
         this.isInserted = new MutableLiveData();
+        this.isDelete = new MutableLiveData();
+        this.isUpdate = new MutableLiveData();
         useCase = new NoteUseCase();
     }
 
@@ -45,21 +47,17 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                     isInserted.postValue(false);
                 });
         return isInserted;
-
     }
 
     public LiveData<List<Note>> getData() {
-
 
         if (Inserted == null) {
             Inserted = new MutableLiveData<List<Note>>();
             LoadData();
         }
-
         return Inserted;
-
-
     }
+
 
     public LiveData<Boolean> delete(Note note) {
 
@@ -69,7 +67,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).
                 subscribe(value -> {
-                    Log.e("success", "success");
+                    Log.e(" delete data success", "success");
                     isDelete.postValue(true);
                 }, error -> {
                     Log.e("error", error.getMessage());
@@ -83,19 +81,18 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public LiveData<Boolean> update(Note note) {
 
         Single.fromCallable((Callable<Object>) () -> {
-            useCase.delete(note);
+            useCase.update(note);
             return true;
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).
                 subscribe(value -> {
-                    Log.e("success", "success");
+                    Log.e(" adaptorNotify success", "success");
                     isUpdate.postValue(true);
                 }, error -> {
                     Log.e("error", error.getMessage());
                     isUpdate.postValue(false);
                 });
         return isUpdate;
-
     }
 
 

@@ -19,6 +19,7 @@ public class NoteUseCase {
     public void insert(Note note) {
         noteRepository.insert(note);
 
+
     }
 
     public List<Note> getAll() {

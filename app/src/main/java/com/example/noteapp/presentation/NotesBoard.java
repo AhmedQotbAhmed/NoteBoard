@@ -1,13 +1,19 @@
 package com.example.noteapp.presentation;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -24,28 +30,52 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
 public class NotesBoard extends AppCompatActivity {
+    private SearchView searchView;
     private RecyclerView recyclerView;
     private ViewModel viewModel;
     private NotesAdaptor adaptor;
-    private ConstraintLayout constraintLayout;
-    private boolean undo = true;
+    private LinearLayout linearLayout;
+    private FloatingActionButton add_btn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
-        constraintLayout = findViewById(R.id.conLayout);
+        linearLayout = findViewById(R.id.conLayout);
+        add_btn = findViewById(R.id.save_btn_notes);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#0000'>" + " All notes " + "</font>"));
+
+        add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(NotesBoard.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 
         recyclerView=findViewById(R.id.recycler_Note);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        getData();
+        enableSwipeToDeleteAndUndo();
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        // close search view on back button pressed
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private void getData() {
+
 
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
         viewModel.getData().observe(this, new Observer<List<Note>>() {
@@ -57,28 +87,6 @@ public class NotesBoard extends AppCompatActivity {
 
             }
         });
-
-
-        enableSwipeToDeleteAndUndo();
-
-
-//        Intent intent;
-//        intent = getIntent();
-//
-//        Bundle bundle = intent.getExtras();
-//        Note  note = (Note) bundle.getSerializable("updatedNote");
-//
-//
-//        if(note!=null ){
-//
-//            update( note);
-//
-//
-//
-//        }
-//        onActivityResult();
-
-
 
 
     }
@@ -98,10 +106,13 @@ public class NotesBoard extends AppCompatActivity {
 
 
                 adaptor.removeItem(position);
-
-
+                viewModel.delete(item).observe(NotesBoard.this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                    }
+                });
                 Snackbar snackbar = Snackbar
-                        .make(constraintLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+                        .make(linearLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
 
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
@@ -109,7 +120,12 @@ public class NotesBoard extends AppCompatActivity {
 
                         adaptor.restoreItem(item, position);
                         recyclerView.scrollToPosition(position);
-                        undo = false;
+
+                        viewModel.insertData(item).observe(NotesBoard.this, new Observer<Boolean>() {
+                            @Override
+                            public void onChanged(Boolean aBoolean) {
+                            }
+                        });
                     }
                 });
 
@@ -117,17 +133,7 @@ public class NotesBoard extends AppCompatActivity {
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
 
-                if (undo) {
 
-                    viewModel.delete(item).observe(NotesBoard.this, new Observer<Boolean>() {
-                        @Override
-                        public void onChanged(Boolean aBoolean) {
-
-
-                        }
-                    });
-
-                }
 
             }
         };
@@ -138,48 +144,82 @@ public class NotesBoard extends AppCompatActivity {
 
     }
 
-    public void update(Note note) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
 
-        viewModel.update(note).observe(this, new Observer<Boolean>() {
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setBackgroundColor((0x52C0C0C0));
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        searchView.setQueryHint("Search notes");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-
-//                adaptor.restoreItem(note, position);
-//                recyclerView.scrollToPosition(position);
-
-
+            public boolean onQueryTextSubmit(String query) {
+                return false;
             }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                adaptor.getFilter().filter(newText);
+                return false;
+            }
+
+
         });
+
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_search) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
-        Note note = adaptor.onActivityResult(requestCode, resultCode, data);
+//        Toast.makeText(getApplicationContext(),"sa"  , Toast.LENGTH_SHORT).show();
+        Note note = null;
+        if (data != null) {
+            Bundle bundle = data.getExtras();
+            int position = data.getIntExtra("position", -1);
+            note = (Note) bundle.getSerializable("updatedNote");
+//                Toast.makeText(getApplicationContext(), "" +note.getId(), Toast.LENGTH_SHORT).show();
 
-        viewModel.update(note).observe(NotesBoard.this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                viewModel.getData().observe(NotesBoard.this, new Observer<List<Note>>() {
-                    @Override
-                    public void onChanged(List<Note> notes) {
-                        // RecyclerView Adaptor
-                        adaptor = new NotesAdaptor(notes);
-                        recyclerView.setAdapter(adaptor);
+            Note finalNote = note;
+            viewModel.update(note).observe(this, new Observer<Boolean>() {
+                @Override
+                public void onChanged(Boolean aBoolean) {
 
-                    }
-                });
+                    adaptor.adaptorNotify(finalNote, position);
 
+                }
+            });
+        }
 
-            }
-        });
 
     }
 
 
 }
-
-
-

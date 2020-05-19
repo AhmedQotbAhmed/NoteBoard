@@ -18,6 +18,7 @@ public class NoteRepository {
     }
 
     public void insert(Note note) {
+
         noteDao.insert(note);
     }
 

@@ -23,6 +23,6 @@ public interface NoteDao {
     void delete(Note note);
 
     @Update
-    void update(Note task);
+    void update(Note note);
 
 }

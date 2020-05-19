@@ -2,15 +2,19 @@ package com.example.noteapp.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.text.Html;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.noteapp.R;
 import com.example.noteapp.entity.Note;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 // Room it's OFFLINE DB                                                                 "SQLite"
@@ -22,11 +26,13 @@ public class MainActivity extends AppCompatActivity {
     //@ColumnInfo ("name=.....'same of your var-name-id' ")   " to make a room creating and knowing your 'varColumn' "
 
     private ViewModel viewModel;
-    private Button btn_save_;
-    private Button btn_get_;
-    private EditText et_task;
-    private EditText et_desc;
-    private EditText et_fin;
+    private FloatingActionButton btn_save_;
+    private EditText title_edt;
+    private EditText desc_edt;
+    private TextView dateTv;
+    private Calendar calendar;
+    private SimpleDateFormat dateFormat;
+    private String date;
 
 //    = ------------------- ----------------------------  =
 // Main Activity to eases The UI
@@ -42,41 +48,46 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btn_get_=findViewById(R.id.bt_get);
-        btn_save_=findViewById(R.id.bt_save);
-        et_task=findViewById(R.id.edt_task);
-        et_desc=findViewById(R.id.edt_desc);
 
+        btn_save_ = findViewById(R.id.save_btn_notes);
+        title_edt = findViewById(R.id.title_edt);
+        desc_edt = findViewById(R.id.edt_desc);
+        dateTv = findViewById(R.id.date_tv);
+        calendar = Calendar.getInstance();
+        dateFormat = new SimpleDateFormat("MMM dd, yyyy");
+        date = dateFormat.format(calendar.getTime());
+        dateTv.setText(date);
+
+
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#0000'>" + " New note" + "</font>"));
 
 
         btn_save_.setOnClickListener(view->insertData());
-        btn_get_.setOnClickListener(view -> startActivity(new Intent(this, NotesBoard.class)));
+
 
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
         viewModel.isInserted.observe(this, aBoolean -> {
 
             if (aBoolean) {
-
-                Toast.makeText(this, "A true ", Toast.LENGTH_SHORT).show();
+                Intent newIntent = new Intent(this, NotesBoard.class);
+                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(newIntent);
             }
 
         });
 
-
-
     }
-    //
 
     void insertData() {
-        String sTask = et_task.getText().toString().trim();
-        String sDesc = et_desc.getText().toString().trim();
+        String sTask = title_edt.getText().toString().trim();
+        String sDesc = desc_edt.getText().toString().trim();
 
         Note note = new Note();
-        note.setTask(sTask);
+        note.setTitle(sTask);
         note.setDesc(sDesc);
-
+        note.setFinishAt(dateTv.getText().toString());
         note.setFinished(false);
-
         viewModel.insertData(note);
 
 

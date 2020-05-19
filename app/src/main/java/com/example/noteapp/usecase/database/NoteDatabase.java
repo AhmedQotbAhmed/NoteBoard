@@ -17,17 +17,9 @@ import com.example.noteapp.entity.Note;
 //              V
 public abstract class NoteDatabase extends RoomDatabase {
 
-    public abstract NoteDao noteDao  ();
-
     private static volatile NoteDatabase INSTANCE; // عايز اخد اوبجيكت بمعني انسيستنس
-    // volatile
-    // thread 2
-                //1. MainThread    2.garbage Collector
-    //علشان البرنامج مش يضرب بنعمل حاجه اسمها  anther api thread
-    // so you need to make a thread for all annotation '@'
-    //   and handled synchronized ''
 
-//builderPattern
+    //builderPattern
     public static NoteDatabase getDatabase(Context context) {
         if (INSTANCE == null) {
             synchronized (NoteDatabase.class) { /// synchronized --> block all tread after finish this operation first
@@ -40,7 +32,14 @@ public abstract class NoteDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+    // volatile
+    // thread 2
+    //1. MainThread    2.garbage Collector
+    //علشان البرنامج مش يضرب بنعمل حاجه اسمها  anther api thread
+    // so you need to make a thread for all annotation '@'
+    //   and handled synchronized ''
 
+    public abstract NoteDao noteDao();
 
 
 }

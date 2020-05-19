@@ -11,7 +11,7 @@ import java.io.Serializable;
                         // interFace  in --> @insert  'Serialize'  "and take a obj from my class"
                         // interFace in  --> @Update    "and take a obj from my class"
                         // interFace in  --> @Delete    "and take a obj from my class"
-// interFace  in -->  @query ("Select * from task ''name of entity ")   'List<class> select( ) { //codes}'
+// interFace  in -->  @query ("Select * from title ''name of entity ")   'List<class> select( ) { //codes}'
 
 //
 
@@ -24,13 +24,13 @@ public class Note implements Serializable {
     private int id;
 
     @ColumnInfo(name = "task")
-    private String task;
+    private String title;
 
     @ColumnInfo(name = "desc")
     private String desc;
 
     @ColumnInfo(name = "finish_by")
-    private String finishBy;
+    private String finishAt;
 
     @ColumnInfo(name = "finished")
     private boolean finished;
@@ -47,12 +47,12 @@ public class Note implements Serializable {
         this.id = id;
     }
 
-    public String getTask() {
-        return task;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTask(String task) {
-        this.task = task;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDesc() {
@@ -63,12 +63,12 @@ public class Note implements Serializable {
         this.desc = desc;
     }
 
-    public String getFinishBy() {
-        return finishBy;
+    public String getFinishAt() {
+        return finishAt;
     }
 
-    public void setFinishBy(String finishBy) {
-        this.finishBy = finishBy;
+    public void setFinishAt(String finishAt) {
+        this.finishAt = finishAt;
     }
 
     public boolean isFinished() {

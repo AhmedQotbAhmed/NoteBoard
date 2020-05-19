@@ -105,9 +105,6 @@ public class NotesAdaptor extends RecyclerView.Adapter<NotesAdaptor.NoteHolder> 
         return filterList;
     }
 
-    public List<Note> getFilterList() {
-        return filterList;
-    }
 
     @Override
     public int getItemCount() {

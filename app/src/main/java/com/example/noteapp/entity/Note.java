@@ -23,13 +23,13 @@ public class Note implements Serializable {
     @ColumnInfo(name = "ID") //  علشان لما اجي بعد كدا و اغير اسم الفريبول اللي تحت ده هيحصل انه مش هيعرف يااكسيس الداتا الاديمه لانه مش عارف الاسم بتاعها علشان كدا بعمل كولوم اينفوا
     private int id;
 
-    @ColumnInfo(name = "task")
+    @ColumnInfo(name = "title")
     private String title;
 
     @ColumnInfo(name = "desc")
     private String desc;
 
-    @ColumnInfo(name = "finish_by")
+    @ColumnInfo(name = "finish_at")
     private String finishAt;
 
     @ColumnInfo(name = "finished")

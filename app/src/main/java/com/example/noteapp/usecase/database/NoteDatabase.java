@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.noteapp.entity.Note;
 // annotation
 
-@Database(entities = {Note.class}, version = 1, exportSchema = false)
+@Database(entities = {Note.class}, version = 2, exportSchema = false)
 //My Class ---->
 //              |
 //              |

@@ -124,7 +124,7 @@ public class NotesAdaptor extends RecyclerView.Adapter<NotesAdaptor.NoteHolder> 
                     List<Note> filteredList = new ArrayList<>();
                     for (Note note : list) {
 
-                        if (note.getTitle().contains(charString.toLowerCase())) {
+                        if (note.getTitle().contains(charString)) {
 
                             filteredList.add(note);
 

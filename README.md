@@ -1,7 +1,8 @@
 # NoteBoard
 Apr 2020 – Present
 
-Project descriptionNotePad app Provides Some features like add, edit, search, and delete on
+Project description 
+NotePad app Provides Some features like add, edit, search, and delete on
 the notes.
 Technology Used:
 ● Room
